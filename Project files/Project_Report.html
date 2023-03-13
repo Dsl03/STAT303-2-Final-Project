@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jamie Park, Lauren Lin, Jonny Myong, and Daniel Lee">
-<meta name="dcterms.date" content="2023-02-27">
+<meta name="dcterms.date" content="2023-03-13">
 
 <title>Project Report</title>
 <style>
@@ -2615,7 +2615,6 @@ vertical-align: -.125em;
   <li><a href="#limitations-of-the-model-with-regard-to-inference-prediction" id="toc-limitations-of-the-model-with-regard-to-inference-prediction" class="nav-link" data-scroll-target="#limitations-of-the-model-with-regard-to-inference-prediction"><span class="toc-section-number">9</span>  Limitations of the model with regard to inference / prediction</a></li>
   <li><a href="#conclusions-and-recommendations-to-stakeholders" id="toc-conclusions-and-recommendations-to-stakeholders" class="nav-link" data-scroll-target="#conclusions-and-recommendations-to-stakeholders"><span class="toc-section-number">10</span>  Conclusions and Recommendations to stakeholder(s)</a></li>
   <li><a href="#github-and-individual-contribution" id="toc-github-and-individual-contribution" class="nav-link" data-scroll-target="#github-and-individual-contribution">GitHub and individual contribution</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
 </div>
@@ -2624,7 +2623,7 @@ vertical-align: -.125em;
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Project Report</h1>
-<p class="subtitle lead">Team name</p>
+<p class="subtitle lead">Besler Besties</p>
 </div>
 
 
@@ -2641,7 +2640,7 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 27, 2023</p>
+      <p class="date">March 13, 2023</p>
     </div>
   </div>
     
@@ -2650,7 +2649,7 @@ vertical-align: -.125em;
 <div>
   <div class="abstract">
     <div class="abstract-title">Abstract</div>
-    <em>Energy demand must be met by the government and/or private companies in order to fuel everyone’s daily lives and activities. Too little supply, and the whole state could be brought to a halt; too much supply, and resources are wasted. Using data on Victoria’s daily electricity price and demand, our group developed a multiple linear regression model with autocorrelation to predict energy demand. The final model was… np.log(demand) ~ max_temperature + I(max_temperature ** 2) + min_temperature + I(min_temperature ** 2) + solar_exposure + I(solar_exposure ** 2) + holiday + rainfall + demand_lag_1_day + demand_lag_1_week + demand_lag_2_week. In general, we advise stakeholders to input forecasted weather conditions and holidays to predict the population’s energy demand and to prepare supply accordingly. More specifically, we recommend stakeholders to reduce energy supply and generation during holidays</em>.
+    <em>Energy demand must be met by the government and/or private companies in order to fuel everyone’s daily lives and activities. Too little supply, and the whole state could be brought to a halt; too much supply, and resources are wasted. Using data on Victoria’s daily electricity price and demand from Kaggle, our group developed a multiple linear regression model with autocorrelation to predict energy demand. The final model was… np.log(demand) ~ max_temperature + I(max_temperature ** 2) + min_temperature + I(min_temperature ** 2) + solar_exposure + I(solar_exposure ** 2) + school_day + holiday + rainfall + demand_lag_1_day + demand_lag_1_week + demand_lag_2_week. In general, we advise stakeholders to input forecasted weather conditions and holidays to predict the population’s energy demand and to prepare supply accordingly. More specifically, we recommend stakeholders to reduce energy supply and generation during holidays</em>.
   </div>
 </div>
 
@@ -2689,7 +2688,7 @@ vertical-align: -.125em;
 <p><strong>There were 4 NA values in this dataset, 1 for solar_exposure and 3 for rainfall, so we imputed them with the means of their respective variables. For example, since the mean of df[‘solar_exposure’] is 14.74337292161519, we replaced the NA value of solar_exposure with 14.74337292161519.</strong></p>
 <p>Did you do any data wrangling or data preparation before the data was ready to use for model development? Did you create any new predictors from exisiting predictors? For example, if you have number of transactions and spend in a credit card dataset, you may create spend per transaction for predicting if a customer pays their credit card bill. Mention the steps at a broad level, you may put minor details in the appendix. Only mention the steps that ended up being useful towards developing your final model(s).</p>
 <p><strong>In addition to imputing NA values, we changed the values of’school_day’ and ‘holiday’ (‘N’ and ‘Y’) to a binary of 0 and 1 so that they could be added to our regression model.</strong></p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -2702,9 +2701,9 @@ vertical-align: -.125em;
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&#39;date&#39;</span>] <span class="op">=</span> df[<span class="st">&#39;date&#39;</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: datetime.strptime(x, <span class="st">&#39;%Y-%m-</span><span class="sc">%d</span><span class="st">&#39;</span>))</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.drop([<span class="st">&#39;RRP&#39;</span>, <span class="st">&#39;demand_pos_RRP&#39;</span>, <span class="st">&#39;RRP_positive&#39;</span>, <span class="st">&#39;demand_neg_RRP&#39;</span>, <span class="st">&#39;RRP_negative&#39;</span>, <span class="st">&#39;frac_at_neg_RRP&#39;</span>], axis<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df.isnull().<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <pre><code>date               0
 demand             0
 min_temperature    0
@@ -2716,7 +2715,7 @@ holiday            0
 dtype: int64</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&#39;Mean of solar_exposure: &#39;</span> <span class="op">+</span> <span class="bu">str</span>(df[<span class="st">&#39;solar_exposure&#39;</span>].mean()))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df.at[<span class="dv">1060</span>, <span class="st">&#39;solar_exposure&#39;</span>]<span class="op">=</span><span class="fl">14.74337292161519</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2729,13 +2728,13 @@ dtype: int64</code></pre>
 Mean of rainfall: 1.505943889681408</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="9">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&#39;school_day&#39;</span>] <span class="op">=</span> df[<span class="st">&#39;school_day&#39;</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="dv">1</span> <span class="cf">if</span> x <span class="op">==</span> <span class="st">&#39;Y&#39;</span> <span class="cf">else</span> <span class="dv">0</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&#39;holiday&#39;</span>] <span class="op">=</span> df[<span class="st">&#39;holiday&#39;</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="dv">1</span> <span class="cf">if</span> x <span class="op">==</span> <span class="st">&#39;Y&#39;</span> <span class="cf">else</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-scrolled="true" data-execution_count="10">
+<div class="cell" data-scrolled="true" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df.describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="5">
 
 <div>
 
@@ -2854,9 +2853,9 @@ Mean of rainfall: 1.505943889681408</code></pre>
 </div>
 </div>
 <ul>
-<li><strong><em>There is an obvious quadratic relationship between demand and min_temperature and demand and max_temperature</em></strong></li>
-<li><strong><em>It seems that solar_exposure might also have a quadratic relationship with demand, but a residual plot should be graphed to confirm</em></strong></li>
-<li><strong><em>Whether rainfall, school_day, and/or holiday have an effect on demand is unclear. They should be included in the first model so that we can check their p-values.</em></strong></li>
+<li><strong>There is an obvious quadratic relationship between demand and min_temperature and demand and max_temperature</strong></li>
+<li><strong>It seems that solar_exposure might also have a quadratic relationship with demand, but a residual plot should be graphed to confirm</strong></li>
+<li><strong>Whether rainfall, school_day, and/or holiday have an effect on demand is unclear. They should be included in the first model so that we can check their p-values.</strong></li>
 </ul>
 <div class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sns.lineplot(x<span class="op">=</span><span class="st">&#39;date&#39;</span>, y<span class="op">=</span><span class="st">&#39;demand&#39;</span>, data<span class="op">=</span>df, color <span class="op">=</span> <span class="st">&#39;#8A9A5B&#39;</span>)</span>
@@ -2872,10 +2871,10 @@ Mean of rainfall: 1.505943889681408</code></pre>
 <ul>
 <li><strong>The repeating patterns in the lineplot of demand against date indicate autocorrelation.</strong></li>
 </ul>
-<div class="cell" data-execution_count="20">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.outliers_influence <span class="im">import</span> variance_inflation_factor</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.tools.tools <span class="im">import</span> add_constant</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[[<span class="st">&#39;max_temperature&#39;</span>, <span class="st">&#39;min_temperature&#39;</span>, <span class="st">&#39;solar_exposure&#39;</span>, <span class="st">&#39;holiday&#39;</span>, <span class="st">&#39;rainfall&#39;</span>]]</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[[<span class="st">&#39;max_temperature&#39;</span>, <span class="st">&#39;min_temperature&#39;</span>, <span class="st">&#39;solar_exposure&#39;</span>, <span class="st">&#39;school_day&#39;</span>, <span class="st">&#39;holiday&#39;</span>, <span class="st">&#39;rainfall&#39;</span>]]</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> add_constant(X, has_constant<span class="op">=</span><span class="st">&#39;add&#39;</span>)</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>vif_data <span class="op">=</span> pd.DataFrame()</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">&#39;feature&#39;</span>] <span class="op">=</span> X.columns</span>
@@ -2887,12 +2886,13 @@ Mean of rainfall: 1.505943889681408</code></pre>
 <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vif_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           feature        VIF
-0            const  12.478907
-1  max_temperature   2.768200
-2  min_temperature   2.056258
-3   solar_exposure   1.571803
-4          holiday   1.005603
-5         rainfall   1.050010</code></pre>
+0            const  15.968241
+1  max_temperature   2.769728
+2  min_temperature   2.056775
+3   solar_exposure   1.575596
+4       school_day   1.041275
+5          holiday   1.033903
+6         rainfall   1.050942</code></pre>
 </div>
 </div>
 <ul>
@@ -3014,14 +3014,15 @@ Mean of rainfall: 1.505943889681408</code></pre>
 <p>Explain the steps taken to develop and improve the base model - informative visualizations / addressing modeling assumption violations / variable transformation / interactions / outlier treatment / influential points treatment / addressing over-fitting / addressing multicollinearity / variable selection - stepwise regression, lasso, ridge regression).</p>
 <p><strong>For our first regression model, we chose to regress energy demand in Victoria from 2015-2020 against all of the non-price predictors of demand within the dataset: min_temperature, max_temperature, solar_exposure, rainfall, and two dummy variables for whether it is a school day or a holiday. With no interaction variables or transformations, our model itself and every predictor had a p-value of less than 0.05, indicating statistical significance; however, the R-squared was 0.166, meaning the model had low predictive power.</strong></p>
 <p><strong>To improve the model’s predictive power, we checked for linearity assumptions (Figures 1 and 2). The residual plot of the initial model showed heteroscedasticity so we chose to apply a log transformation on the response variable. Furthermore, because max_temp, min_temp, and solar_exposure all exhibit parabolicity, we applied quadratic transformations on these variables, leading us to our second MLR.</strong></p>
-<p><strong>After these transformations (Figure 3), the model itself and the predictor variables were still statistically significant, and the R-squared increased to 0.476 (by 187%). When the residuals were plotted once again, we saw an improvement and the variables fulfilled the linearity assumptions.</strong></p>
+<p><strong>After these transformations (Figure 3), the model itself and the predictor variables were still statistically significant, and the R-squared increased to 0.489 (by 187%). When the residuals were plotted once again, we saw an improvement and the variables fulfilled the linearity assumptions.</strong></p>
 <p><strong>We also explored the possibility of using interaction variables to further optimize the regression model. As per Prof. Besler’s suggestion, we interacted holiday and maximum temperature but there was little improvement. The R-squared remained constant and the RMSE increased by approximately 0.00000000015 — a negligible amount.</strong></p>
-<p><strong>Since demand demonstrates periodicity, we conducted autocorrelation, adding lag variables at increasing increments: 1 day, 1 week, and 2 weeks. For each additional lag variable, R-squared increased and RMSE decreased [(0.471, 9498.59), (0.624, 8187.29), (0.744, 7373.21), and (0.775, 6997.95)], respectfully.</strong></p>
-<p><strong>The final model has an R-squared value of 0.775 and an RMSE of 6997.95, much lower relative to other models of similar scope and target.</strong></p>
+<p><strong>We then checked for outliers and high leverage points and found that were was one influential point. It was removed.</strong></p>
+<p><strong>Since demand demonstrates periodicity, we conducted autocorrelation, adding lag variables at increasing increments: 1 day, 1 week, and 2 weeks. For each additional lag variable, R-squared increased and RMSE decreased [(0.627, 8170.33), (0.745, 7332.06), and (0.775, 6956.36)], respectfully.</strong></p>
+<p><strong>The final model has an R-squared value of 0.775 and an RMSE of 6956.36, lower relative to other models of similar scope and target.</strong></p>
 <p>Did you succeed in achieving your goal, or did you fail? Why?</p>
-<p><strong>Yes, we succeeded in achieving our goal as we are now able to predict electricity demand based on weather factors and holidays in order to anticipate the city’s needed supply. Given the R-squared of 0.775 and RMSE of 6997.95 (lower end of target RMSE range), these predictions can be utilized with confidence.</strong></p>
+<p><strong>Yes, we succeeded in achieving our goal as we are now able to predict electricity demand based on weather factors and holidays in order to anticipate the city’s needed supply. Given the R-squared of 0.775 and RMSE of 6956.36 (lower end of target RMSE range), these predictions can be utilized with confidence.</strong></p>
 <p>Put the final model equation.</p>
-<p><strong>np.log(demand) ~ max_temperature + I(max_temperature </strong> 2) + min_temperature + I(min_temperature ** 2) + solar_exposure + I(solar_exposure ** 2) + holiday + rainfall + demand_lag_1_day + demand_lag_1_week + demand_lag_2_week**</p>
+<p><strong>np.log(demand) ~ max_temperature + I(max_temperature </strong> 2) + min_temperature + I(min_temperature ** 2) + solar_exposure + I(solar_exposure ** 2) + school_day + holiday + rainfall + demand_lag_1_day + demand_lag_1_week + demand_lag_2_week**</p>
 </section>
 <section id="limitations-of-the-model-with-regard-to-inference-prediction" class="level2" data-number="9">
 <h2 data-number="9" class="anchored" data-anchor-id="limitations-of-the-model-with-regard-to-inference-prediction"><span class="header-section-number">9</span> Limitations of the model with regard to inference / prediction</h2>
@@ -3037,7 +3038,7 @@ Mean of rainfall: 1.505943889681408</code></pre>
 <p>How do you use those conclusions to come up with meaningful recommendations for stakeholders? The recommendations must be action-items for stakeholders that they can directly implement without any further analysis. Be as precise as possible. The stakeholder(s) are depending on you to come up with practically implementable recommendations, instead of having to think for themselves.</p>
 <p>If your recommendations are not practically implementable by stakeholders, how will they help them? Is there some additional data / analysis / domain expertise you need to do to make the recommendations implementable?</p>
 <p>Do the stakeholder(s) need to be aware about some limitations of your model? Is your model only good for one-time use, or is it possible to update your model at a certain frequency (based on recent data) to keep using it in the future? If it can be used in the future, then for how far into the future?</p>
-<p><strong>The optimal model’s R-squared is 0.775 and the RMSE is 6997.95. Given the high accuracy and the RMSE that is on the lower end of the range compared to other models developed with the same data, stakeholders can be confident in the prediction results.</strong></p>
+<p><strong>The optimal model’s R-squared is 0.775 and the RMSE is 6956.36. Given the high accuracy and the RMSE that is on the lower end of the range compared to other models developed with the same data, stakeholders can be confident in the prediction results.</strong></p>
 <p><strong>As a result, stakeholders should consider the following recommendations outlined here when estimating the electricity demand. The first recommendation advises stakeholders to reduce energy supply and generation during holidays, as that predictor’s coefficient (with all other predictors held constant) shows a decrease in energy demand by about 10%. Residents of Victoria are likely not working on national holidays and the majority of businesses are closed, which explains the lesser demand. The second insight relates to minimum and maximum temperature—their coefficients are relatively small, demonstrating that temperature doesn’t have a large impact on energy demand. The lesser effect of temperature predictors makes sense; during hot weather, the air conditioner will be on blast, while cold weather warrants heating systems to be on.</strong></p>
 <p><strong>Lastly, there are several limitations of the model that should be considered. The model uses data from three years ago; it was not trained on weather data from the last year. Therefore, we advise that models be trained on new data each year to stay up to date. Especially with climate change causing more unpredictable weather patterns in recent years, updating the model will be crucial to continuously obtain accurate electricity demand predictions. With these recommendations in mind while running the model, the government can make the necessary decisions with electricity companies to match supply with demand.</strong></p>
 </section>
@@ -3088,20 +3089,6 @@ Number of GitHub commits
 </tr>
 <tr>
 <td>
-Daniel Lee
-</td>
-<td>
-Variable selection
-</td>
-<td>
-Used Lauren’s EDA to identify the ideal variables for model building.
-</td>
-<td>
-7
-</td>
-</tr>
-<tr>
-<td>
 Lauren Lin
 </td>
 <td>
@@ -3112,6 +3099,20 @@ Cleaned data to impute missing values with their means and plotted graphs to get
 </td>
 <td>
 4
+</td>
+</tr>
+<tr>
+<td>
+Daniel Lee
+</td>
+<td>
+Variable selection
+</td>
+<td>
+Used Lauren’s EDA to identify the ideal variables for model building.
+</td>
+<td>
+7
 </td>
 </tr>
 <tr>
@@ -3146,11 +3147,6 @@ Used visualizations and conclusions made by teammates to developed the MLR, and 
 </tbody></table>
 <p>List the <strong>challenges</strong> you faced when collaborating with the team on GitHub. Are you comfortable using GitHub? Do you feel GitHuB made collaboration easier? If not, then why? <em>(Individual team members can put their opinion separately, if different from the rest of the team)</em></p>
 <p><strong>The only issues we faced were getting used to the platform and its features and avoiding merge conflicts. Once we got the hang of it, we found GitHub to be really convenient!</strong></p>
-</section>
-<section id="references" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
-<p>List and number all bibliographical references. When referenced in the text, enclose the citation number in square brackets, for example [1].</p>
-<p>[1] Authors. The frobnicatable foo filter, 2014. Face and Gesture submission ID 324. Supplied as additional material fg324.pdf. 3</p>
 </section>
 
 </main>
